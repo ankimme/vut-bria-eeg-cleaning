@@ -41,7 +41,7 @@ class EEGdenoiseNet(Dataset):
     def __len__(self) -> int:
         return len(self._eeg_data)
 
-    def __getitem__(self, index: int) -> tuple[np.ndarray, np.ndarray, NoiseTypeEnum]:
+    def __getitem__(self, index: int) -> tuple[np.ndarray, np.ndarray]:
         clean_eeg_segment = self._eeg_data[index]
 
         # get random noise type
@@ -49,23 +49,23 @@ class EEGdenoiseNet(Dataset):
         combined_eeg_segments = self._add_noise(clean_eeg_segment, category)
         combined = self._normalize(combined_eeg_segments)
         clean = self._normalize(clean_eeg_segment)
-        return combined, clean, category.value
+        return combined, clean
 
     def _add_noise(
         self, clean_segment: np.ndarray, noise_type: NoiseTypeEnum
     ) -> np.ndarray:
         """Add noise to clean EEG segments. SNR and noise sample are chosen randomly."""
         match noise_type:
-            case NoiseTypeEnum.CLEAN:
+            case NoiseTypeEnum.NONE:
                 return clean_segment
-            case NoiseTypeEnum.EYE_MOVEMENT:
+            case NoiseTypeEnum.EOG:
                 snr_db = random.uniform(-7, 2)  # according to paper
                 eog_index = random.randrange(0, len(self._eog_data))
                 noisy_segment = self._eog_data[eog_index]
                 return self._combine_clean_and_noisy_segments(
                     clean_segment, noisy_segment, snr_db
                 )
-            case NoiseTypeEnum.FACIAL_MUSCLES_MOVEMENT:
+            case NoiseTypeEnum.EMG:
                 snr_db = random.uniform(-7, 4)  # according to paper
                 emg_index = random.randrange(0, len(self._emg_data))
                 noisy_segment = self._emg_data[emg_index]
