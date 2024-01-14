@@ -1,0 +1,11 @@
+__pycache__/**
+models/__pycache__/**
+backends/__pycache__/**
+heads/__pycache__/**
+data/
+env/
+results/
+
+test.py
+test.ipynb
+paper.pdf
