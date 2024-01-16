@@ -45,22 +45,22 @@ class CNN_02(nn.Module):
         super(CNN_02, self).__init__()
 
         self.net = nn.Sequential(
-            nn.Conv1d(1, 16, 3, padding=1),  # input: 1 x 512, output: 16 x 512
+            nn.Conv1d(1, 16, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
-            nn.Conv1d(16, 32, 3, padding=1),  # input: 16 x 512, output: 32 x 512
+            nn.Conv1d(16, 32, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
-            nn.Conv1d(32, 64, 3, padding=1),  # input: 16 x 512, output: 32 x 512
+            nn.Conv1d(32, 64, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
-            nn.Conv1d(64, 32, 3, padding=1),  # input: 16 x 512, output: 32 x 512
+            nn.Conv1d(64, 32, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
-            nn.Conv1d(32, 16, 3, padding=1),  # input: 32 x 512, output: 16 x 512
+            nn.Conv1d(32, 16, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
-            nn.Conv1d(16, 1, 3, padding=1),  # input: 16 x 512, output: 1 x 512
+            nn.Conv1d(16, 1, 3, padding=1),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.2),
         )
