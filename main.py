@@ -15,7 +15,7 @@ from model_factory import ModelFactory
 
 
 def create_model() -> torch.nn.Module:
-    model = ModelFactory.FCNN_01()
+    model = ModelFactory.LSTM_01()
     model = model.to(device)
     return model
 
@@ -84,7 +84,7 @@ def evaluate_single_epoch(
     run_dir: str,
 ) -> dict:
     model.eval()
-    running_loss = 0
+    running_loss = 0.0
     with torch.no_grad():
         for data, target_regression in dl_test:
             data = data.to(device)
@@ -103,16 +103,7 @@ def evaluate_single_epoch(
     )
 
     if epoch % 10 == 0:
-        print("TODO visualization")
-        # visualizer.visualise_gt_noised_and_predicted(
-        #     # visualise_gt_noised_and_predicted(
-        #     data[0].to("cpu").numpy(),
-        #     target_regression[0].to("cpu").numpy(),
-        #     output_regression[0].to("cpu").numpy(),
-        #     epoch,
-        #     f"{run_dir}/plots/",
-        # )
-    torch.save(model.state_dict(), f"{run_dir}/model/epoch_{epoch}.pth")
+        torch.save(model.state_dict(), f"{run_dir}/model/epoch_{epoch}.pth")
 
     return loss_history
 
@@ -153,19 +144,22 @@ def train(
 
 def main():
     BATCH_SIZE = 32
-    EPOCH_CNT = 500
+    EPOCH_CNT = 2500
 
     model = create_model()
     criterion = MSELoss(reduction="sum")
     # optimizer = torch.optim.Adam(model.parameters(), lr=0.000008)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.00005, betas=(0.5, 0.9))
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.00005, betas=(0.5, 0.9))
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=0.000_05, betas=(0.82, 0.95), weight_decay=0.000_01
+    )
     scaler = GradScaler()
     dl_train, dl_test = create_dataloader(
         BATCH_SIZE,
         [
             NoiseTypeEnum.NONE,  # train with positive examples
             NoiseTypeEnum.EOG,
-            # NoiseTypeEnum.EMG,
+            NoiseTypeEnum.EMG,
         ],
     )
 
